@@ -4,7 +4,7 @@ To use Nextcloud Install Script run the commands below:
 
 Step1: 
 
-wget 
+wget https://raw.githubusercontent.com/geek2gether/Nextcloud/main/nextcloud-install.sh
 
 Step2:
 
