@@ -175,8 +175,8 @@ cat > /etc/apache2/sites-available/${NCdomainName}.conf << EOF
 
     Header add Strict-Transport-Security: "max-age=15552000;includeSubdomains"
 
-    ServerAdmin admin@cloud.tt.com
-    ServerName cloud.tt.com
+    ServerAdmin admin@${NCdomainName}
+    ServerName ${NCdomainName}
 
     <Directory "/var/www/${NCdomainName}/">
     Options MultiViews FollowSymlinks
