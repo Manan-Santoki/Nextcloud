@@ -13,11 +13,11 @@ fi
 
 
 # Output colors
-YELLOW="[\033[1;33m]"
-BLUE="\[033[0;34m"
-RED="\033[0;31m]"
-GREEN="[\033[0;32m]"
-NC="[\033[0m]"
+YELLOW='\033[1;33m'
+BLUE=\[033[0;34m'
+RED="'033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m'
 
 # Log Location
 LOG="/tmp/nextcloud-install.log"
@@ -37,7 +37,7 @@ OS=$(uname)
 
 #Collect
 clear
-echo "${YELLOW}Nextcloud Installation Script.\n Please input required values to complete install and setup:  ${NC}"
+echo "${YELLOW}Nextcloud Installation Script. Please input required values to complete install and setup:  ${NC}"
 echo
 while true; do
     read -s -p "Enter Database root password: " mysqlRootPwd
