@@ -12,7 +12,7 @@ if ! [ $( id -u ) = 0 ]; then
 fi
 
 
-# Colors to use for output
+# Output colors
 YELLOW="[\033[1;33m]"
 BLUE="\[033[0;34m"
 RED="\033[0;31m]"
@@ -23,7 +23,7 @@ NC="[\033[0m]"
 LOG="/tmp/nextcloud-install.log"
 
 
-# Initialize variable values
+# Initialize variables
 DbUser=""
 DbPwd=""
 NCdomainName=""
@@ -250,7 +250,7 @@ fi
 echo -e "${GREEN}Restarting Apache Service successfully completed${NC}"
 
 #installtion clean up
-rm -rf *.zip *.sql
+rm -rf *.zip 
+rm -rf *.sql
 echo
-
 echo -e "${BLUE}Nextcloud installation and setup complete\n- Visit: https://${NCIP} or https://${NCdomainName}\n Admin username: ${NCAdmin}\n Admin password: ${NCPass} \n ***Be sure to change the password***. \n ${RED}Thank you for using my script and being part of the geek2gether community.${NC}"
