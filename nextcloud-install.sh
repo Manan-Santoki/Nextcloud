@@ -34,11 +34,14 @@ DbUser=nextcloud_dbadmin
 DbPwd=$(openssl rand -base64 24)
 OS=$(uname)
 
+clear
+
+
 echo "${YELLOW}Welcome to my simple Nextcloud install script${NC}"
 echo
 
 #Collect
-read -p "Enter Nextcloud Serever hostname - e.g cloud.example.com: " NCdomainName
+read -p "Enter Nextcloud Server hostname - e.g cloud.example.com: " NCdomainName
 read -p "Enter your servers IP Address: " NCIP
 
 #change hostname
