@@ -32,16 +32,16 @@ NCAdmin=ncadmin
 NCPass=$(openssl rand -base64 18)
 DbUser=nextcloud_dbadmin
 DbPwd=$(openssl rand -base64 24)
-OS=$(uname)
+OS=$(lsb_release -i | cut -f 2-)
 
+#clean terminal
 clear
-
 
 echo "${YELLOW}Welcome to my simple Nextcloud install script${NC}"
 echo
 
 #Collect
-read -p "Enter Nextcloud Server hostname - e.g cloud.example.com: " NCdomainName
+read -p "Enter Nextcloud Serever hostname - e.g cloud.example.com: " NCdomainName
 read -p "Enter your servers IP Address: " NCIP
 
 #change hostname
@@ -221,6 +221,18 @@ sudo -u www-data php /var/www/${NCdomainName}/occ config:system:set loglevel --v
 sudo -u www-data php /var/www/${NCdomainName}/occ app:enable admin_audit
 sudo -u www-data php /var/www/${NCdomainName}/occ config:app:set admin_audit logfile --value="/var/log/nextcloud.log"
 sudo -u www-data php /var/www/${NCdomainName}/occ config:system:set logfile_audit --value="/var/log/nextcloud.log"
+#enable external share support and install php-smbclient
+sudo -u www-data php /var/www/${NCdomainName}/occ app:enable files_external
+if [[ "$OS" == "Ubuntu" ]]; then
+    echo -e "${YELLOW}Installing PHP SMB Support for ${OS}" 1>&2
+    sudo DEBIAN_FRONTEND=noninteractive apt install -y php-smbclient
+elif [[ "$OS" == "Debian" ]]; then
+    echo -e "${YELLOW}Installing PHP SMB Support for ${OS}" 1>&2
+    sudo DEBIAN_FRONTEND=noninteractive apt install -y smbclient 
+else
+  echo -e "${RED}Could not determine OS skipping PHP SMB Install" 1>&2
+
+fi
 
 #Set nextcloud to use cron instead of Ajax
 sudo crontab -u www-data -l | { cat; echo "*/5  *  *  *  * php -f /var/www/${NCdomainName}/cron.php"; } | sudo crontab -u www-data - > /dev/null 2>&1
@@ -257,4 +269,4 @@ echo -e "${GREEN}Restarting Apache Service successfully completed${NC}"
 rm -rf latest.zip  mysql_secure_installation.sql
 echo
 
-echo -e "${BLUE}Nextcloud installation and setup complete\n- Visit: https://${NCIP} or https://${NCdomainName}\n Admin username: ${NCAdmin}\n Admin password: ${NCPass}\n\n Database root user password: ${mysqlRootPwd} \n Database User: ${DbUser} \n Database user password: ${DbPwd}\n\n ${GREEN}Thank you for using my script and being part of the geek2gether community.${NC}"
+echo -e "${BLUE}Nextcloud installation and setup complete\n- Visit: https://${NCIP} or https://${NCdomainName}\n Admin username: ${NCAdmin}\n Admin password: ${NCPass}\n\n Database root user password: ${NCPass} \n Database User: ${NCAdmin} \n Database user password: ${mysqlRootPwd}\n\n ${GREEN}Thank you for using my script and being part of the geek2gether community.${NC}"
