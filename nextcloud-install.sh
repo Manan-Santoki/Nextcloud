@@ -37,6 +37,8 @@ OS=$(uname)
 
 #Collect
 clear
+echo "${YELLOW}Nextcloud Installation Script.\n Please input required values to complete install and setup:  ${NC}"
+echo
 while true; do
     read -s -p "Enter Database root password: " mysqlRootPwd
     echo
