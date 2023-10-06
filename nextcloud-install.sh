@@ -209,7 +209,7 @@ sudo a2ensite ${NCdomainName}.conf > /dev/null 2>&1 &>> ${LOG}
 #enable required php modules
 sudo a2enmod dir env headers mime rewrite ssl > /dev/null 2>&1 &>> ${LOG}
 
-# Install Nextcloud
+# Run nextcloud setup manually
 echo -e "${YELLOW}Installing Nextcloud, it might take a while..."
 cd /var/www/${NCdomainName}
 sudo -u www-data php /var/www/"${NCdomainName}"/occ maintenance:install \
