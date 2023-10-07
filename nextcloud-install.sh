@@ -105,7 +105,7 @@ GRANT ALL PRIVILEGES ON ${NCDbName}.* TO '${DbUser}'@'localhost';
 FLUSH PRIVILEGES;"
 
 # Execute SQL code
-echo -e "${YELLOW}Creating and setup Nextcloud Database${NC}"
+echo -e "${YELLOW}Creating and setting up your Nextcloud Database${NC}"
 echo ${CODE} | mysql -u root -p${mysqlRootPwd}
 if [ $? -ne 0 ]; then
     echo -e "${RED}Failed to create and setup Nextcloud database " 1>&2
