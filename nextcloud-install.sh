@@ -38,7 +38,7 @@ PHP=/etc/php/*/apache2/php.ini
 #clean terminal
 clear
 
-echo "${YELLOW}Welcome to my simple Nextcloud install script${NC}"
+echo -e "${YELLOW}Welcome to my simple Nextcloud install script${NC}"
 echo
 
 #Collect
@@ -53,7 +53,7 @@ debconf-set-selections <<< "mysql-server mysql-server/root_password password ${m
 debconf-set-selections <<< "mysql-server mysql-server/root_password_again password ${mysqlRootPwd}"
 
 #update OS
-echo "${YELLOW}Updating your ${OS} OS.. ${NC}"
+echo -e "${YELLOW}Updating your ${OS} OS.. ${NC}"
 export DEBIAN_FRONTEND=noninteractive
 apt update -y && apt upgrade -y && apt dist-upgrade -y &>> ${LOG}
 apt install -y wget &>> ${LOG}
@@ -62,7 +62,7 @@ apt install -y wget &>> ${LOG}
 clear
 
 #download nextcloud
-echo "${YELLOW}Downloading Nextcloud.. ${NC}"
+echo -e "${YELLOW}Downloading Nextcloud.. ${NC}"
 wget https://download.nextcloud.com/server/releases/latest.zip
 if [ $? -ne 0 ]; then
     echo -e "${RED}Failed to download nextcloud" 1>&2
@@ -71,7 +71,7 @@ fi
 echo -e "${GREEN}Downloaded Nextcloud${NC}"
 
 #install Mariadb
-echo "${YELLOW}Installing Database ...${NC}"
+echo -e "${YELLOW}Installing Database ...${NC}"
 sudo apt install mariadb-server -y &>> ${LOG}
 if [ $? -ne 0 ]; then
     echo -e "${RED}Failed to install mariadb-server" 1>&2
@@ -81,7 +81,7 @@ echo -e "${GREEN}Downloaded MariaDB Server${NC}"
 
 
 #secure mariadb
-echo "${YELLOW}Securing your Database.. ${NC}"
+echo -e "${YELLOW}Securing your Database.. ${NC}"
 echo > mysql_secure_installation.sql << EOF
 UPDATE mysql.user SET Password=PASSWORD('${mysqlRootPwd}') WHERE User='root';
 DELETE FROM mysql.user WHERE User='';
@@ -105,7 +105,7 @@ GRANT ALL PRIVILEGES ON ${NCDbName}.* TO '${DbUser}'@'localhost';
 FLUSH PRIVILEGES;"
 
 # Execute SQL code
-echo "${YELLOW}Creating and setup Nextcloud Database${NC}"
+echo -e "${YELLOW}Creating and setup Nextcloud Database${NC}"
 echo ${CODE} | mysql -u root -p${mysqlRootPwd}
 if [ $? -ne 0 ]; then
     echo -e "${RED}Failed to create and setup Nextcloud database " 1>&2
@@ -115,7 +115,7 @@ echo -e "${GREEN}Setting up Nextcloud database completed successfully${NC}"
 
 
 #install required packages
-echo "${YELLOW}Installing required Nextcloud packages in the background, this may take a while ..${NC}"
+echo -e "${YELLOW}Installing required Nextcloud packages in the background, this may take a while ..${NC}"
 sudo apt install apache2 php php-apcu php-bcmath php-cli php-common php-curl php-gd php-gmp php-imagick php-intl php-mbstring php-mysql php-zip php-xml unzip php-imagick redis php-redis imagemagick cron -y > /dev/null 2>&1 &>> ${LOG}
 if [ $? -ne 0 ]; then
     echo -e "${RED}Failed to install required package" 1>&2
