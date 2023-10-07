@@ -38,8 +38,8 @@ PHP=/etc/php/*/apache2/php.ini
 #clean terminal
 clear
 
-echo -e "${YELLOW}Welcome to my simple Nextcloud install script${NC}"
-echo
+echo -e "${YELLOW}Welcome to my Nextcloud install script.\nThe script will automatically setup:\n \n${BLUE} - SSL with a self sign certificate. \n - Enable memcache APCu local Caching.\n - Enable Redis for database transactional locking.\n - Setup Nextcloud PHP Recommendations.\n - Enable Pretty URl's.\n - Setup Cron for background tasks.\n - Enabling Bruteforce protection.\n ${NC}"
+echo""
 
 #Collect
 read -p "Enter Nextcloud Serever hostname - e.g cloud.example.com: " NCdomainName
