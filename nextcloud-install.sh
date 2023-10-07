@@ -33,6 +33,7 @@ NCPass=$(openssl rand -base64 18)
 DbUser=nextcloud_dbadmin
 DbPwd=$(openssl rand -base64 24)
 OS=$(lsb_release -i | cut -f 2-)
+PHP=/etc/php/*/apache2/php.ini
 
 #clean terminal
 clear
@@ -115,7 +116,7 @@ echo -e "${GREEN}Setting up Nextcloud database completed successfully${NC}"
 
 #install required packages
 echo "${YELLOW}Installing required Nextcloud packages in the background, this may take a while ..${NC}"
-sudo apt install apache2 php php-apcu php-bcmath php-cli php-common php-curl php-gd php-gmp php-imagick php-intl php-mbstring php-mysql php-zip php-xml unzip php-imagick imagemagick cron -y > /dev/null 2>&1 &>> ${LOG}
+sudo apt install apache2 php php-apcu php-bcmath php-cli php-common php-curl php-gd php-gmp php-imagick php-intl php-mbstring php-mysql php-zip php-xml unzip php-imagick redis php-redis imagemagick cron -y > /dev/null 2>&1 &>> ${LOG}
 if [ $? -ne 0 ]; then
     echo -e "${RED}Failed to install required package" 1>&2
     exit 1
@@ -250,8 +251,36 @@ sudo -u www-data php /var/www/${NCdomainName}/occ config:system:set trusted_doma
 sudo -u www-data php /var/www/${NCdomainName}/occ config:system:set trusted_domains 1 --value="${NCdomainName}"
 sudo -u www-data php /var/www/${NCdomainName}/occ config:system:set trusted_domains 2 --value="${NCIP}"
 
-#set php limit to recommended 512mb
-sudo sed -i "s|memory_limit =.*|memory_limit = 512M|g" /etc/php/*/apache2/php.ini
+#set php recommended Configurations
+echo -e "${YELLOW}Enabling PHP Recommendations for Nextcloud.${NC}"
+sudo sed -i "s:memory_limit = .*:memory_limit = 512M:" $PHP
+sudo sed -i "s:upload_max_filesize = .*:upload_max_filesize = 200M:" $PHP
+sudo sed -i "s:max_execution_time = .*:max_execution_time = 360:" $PHP
+sudo sed -i "s:post_max_size = .*:post_max_size = 200M:" $PHP
+sudo sed -i "s:;opcache.interned_strings_buffer=.*:opcache.interned_strings_buffer=8:" $PHP
+sudo sed -i "s:;opcache.max_accelerated_files=.*:opcache.max_accelerated_files=10000:" $PHP
+sudo sed -i "s:;opcache.memory_consumption=.*:opcache.memory_consumption=128:" $PHP
+sudo sed -i "s:;opcache.save_comments=.*:opcache.save_comments=1:" $PHP
+sudo sed -i "s:;opcache.revalidate_freq=.*:opcache.revalidate_freq=1:" $PHP
+#add and fix for memcache local
+sudo sed -i -e $'$a\\[nextcloud]' /etc/php/*/mods-available/apcu.ini
+sudo sed -i -e $'$a\\apc.enable_cli = 1' /etc/php/*/mods-available/apcu.ini
+sudo sed -i -e $'$a\\memory_limit = 512M' /etc/php/*/mods-available/apcu.ini
+
+#setup Caching
+echo -e "${YELLOW}Setting  Up Caching..${NC}"
+sudo usermod -a -G redis www-data
+sleep 5
+sudo -u www-data php /var/www/${NCdomainName}/occ config:system:set filelocking.enabled --value="true"
+sleep 5
+sudo -u www-data php /var/www/${NCdomainName}/occ config:system:set memcache.local --value="\OC\Memcache\APCu"
+sleep 5
+sudo -u www-data php /var/www/${NCdomainName}/occ config:system:set memcache.locking --value="\OC\Memcache\Redis"
+sudo -u www-data php /var/www/${NCdomainName}/occ config:system:set memcache.distributed --value="\OC\Memcache\Redis"
+sudo -u www-data php /var/www/${NCdomainName}/occ config:system:set redis host --value="localhost"
+sudo -u www-data php /var/www/${NCdomainName}/occ config:system:set redis port --value="6379"
+sudo -u www-data php /var/www/${NCdomainName}/occ config:system:set redis timeout --value="0.0"
+
 #configure theming
 sudo -u www-data php /var/www/${NCdomainName}/occ theming:config name ${NCdomainName}
 sudo -u www-data php /var/www/${NCdomainName}/occ theming:config url https://${NCdomainName}
@@ -269,4 +298,4 @@ echo -e "${GREEN}Restarting Apache Service successfully completed${NC}"
 rm -rf latest.zip  mysql_secure_installation.sql
 echo
 
-echo -e "${BLUE}Nextcloud installation and setup complete\n- Visit: https://${NCIP} or https://${NCdomainName}\n Admin username: ${NCAdmin}\n Admin password: ${NCPass}\n\n Database root user password: ${NCPass} \n Database User: ${NCAdmin} \n Database user password: ${mysqlRootPwd}\n\n ${GREEN}Thank you for using my script and being part of the geek2gether community.${NC}"
+echo -e "${BLUE}Nextcloud installation and setup complete\n- Visit: https://${NCIP} or https://${NCdomainName}\n Admin username: ${NCAdmin}\n Admin password: ${NCPass}\n\n Database root user password: ${mysqlRootPwd} \n Database User: ${DbUser} \n Database user password: ${DbPwd}\n\n ${GREEN}Thank you for using my script and being part of the geek2gether community.${NC}"
