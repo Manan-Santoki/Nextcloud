@@ -295,8 +295,9 @@ fi
 echo -e "${GREEN}Restarting Apache Service successfully completed${NC}"
 
 #installtion clean up
-echo -e "${GREEN}Cleaning up temp files ....${NC}"
-rm -rf latest.zip mysql_secure_installation.sql
+echo -e "${YELLOW}Cleaning up installation temp files ....${NC}"
+sudo rm -rf latest.zip 
+sudo rm -rf mysql_secure_installation.sql
 echo""
 
 
