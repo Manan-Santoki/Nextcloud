@@ -42,8 +42,8 @@ echo -e "${YELLOW}Welcome to my Nextcloud install script.\nThe script will autom
 echo""
 
 #Collect
-read -p "Enter Nextcloud Serever hostname - e.g cloud.example.com: " NCdomainName
-read -p "Enter your servers IP Address: " NCIP
+read -p "Enter Nextcloud Server's hostname - e.g cloud.example.com: " NCdomainName
+read -p "Enter your Server's IP Address: " NCIP
 
 #change hostname
 sudo hostnamectl set-hostname "${NCdomainName}"
