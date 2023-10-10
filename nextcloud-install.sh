@@ -7,7 +7,7 @@
 
 # Check if user is root or sudo
 if ! [ $( id -u ) = 0 ]; then
-    echo -e "${RED}Please run this script as sudo or root user. ${NC}"
+    echo -e "${RED}Please run the nextcloud script as sudo or root user. ${NC}"
     exit 1
 fi
 
