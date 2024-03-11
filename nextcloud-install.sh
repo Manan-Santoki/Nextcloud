@@ -236,7 +236,11 @@ else
 fi
 
 #Set nextcloud to use cron instead of Ajax
-sudo crontab -u www-data -l | { cat; echo "*/5  *  *  *  * php -f /var/www/${NCdomainName}/cron.php"; } | sudo crontab -u www-data - > /dev/null 2>&1
+#sudo crontab -u www-data -l | { cat; echo "*/5  *  *  *  * php -f /var/www/${NCdomainName}/cron.php"; } | sudo crontab -u www-data - > /dev/null 2>&1
+sudo crontab -u www-data -l | { cat; echo "*/5  *  *  *  * php -f /var/www/${NCdomainName}/cron.php > /dev/null 2>&1"; } | sudo crontab -u www-data -
+
+#update cron
+sudo -u www-data php /var/www/${NCdomainName}/occ config:system:set maintenance_window_start --value=“15”
 
 #enable pretty url's
 echo -e "${YELLOW}Enabling pretty url's. ${NC}"
