@@ -261,7 +261,7 @@ sudo sed -i "s:memory_limit = .*:memory_limit = 512M:" $PHP
 sudo sed -i "s:upload_max_filesize = .*:upload_max_filesize = 200M:" $PHP
 sudo sed -i "s:max_execution_time = .*:max_execution_time = 360:" $PHP
 sudo sed -i "s:post_max_size = .*:post_max_size = 200M:" $PHP
-sudo sed -i "s:;opcache.interned_strings_buffer=.*:opcache.interned_strings_buffer=128:" $PHP
+sudo sed -i "s:;opcache.interned_strings_buffer=.*:opcache.interned_strings_buffer=16:" $PHP
 sudo sed -i "s:;opcache.max_accelerated_files=.*:opcache.max_accelerated_files=10000:" $PHP
 sudo sed -i "s:;opcache.memory_consumption=.*:opcache.memory_consumption=128:" $PHP
 sudo sed -i "s:;opcache.save_comments=.*:opcache.save_comments=1:" $PHP
