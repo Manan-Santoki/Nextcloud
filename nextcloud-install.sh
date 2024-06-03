@@ -256,7 +256,7 @@ sudo -u www-data php /var/www/${NCdomainName}/occ config:system:set trusted_doma
 sudo -u www-data php /var/www/${NCdomainName}/occ config:system:set trusted_domains 2 --value="${NCIP}"
 #fix directory issue nextcloud 29.0.1
 sudo -u www-data php /var/www/${NCdomainName}/occ config:system:set overwritehost --value="https://${NCdomainName}"
-sudo -u www-data php /var/www/${NCdomainName}/occ config:system:set overwritehost --value="https"
+sudo -u www-data php /var/www/${NCdomainName}/occ config:system:set overwriteprotocol --value="https"
 
 #set php recommended Configurations
 echo -e "${YELLOW}Enabling PHP Recommendations for Nextcloud.${NC}"
