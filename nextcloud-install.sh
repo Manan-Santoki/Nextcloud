@@ -149,23 +149,61 @@ sudo a2dissite 000-default.conf > /dev/null 2>&1 &>> ${LOG}
 
 #create host config file
 cat > /etc/apache2/sites-available/${NCdomainName}.conf << EOF
+<VirtualHost *:80>
+    RewriteEngine On
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}$1 [R=301,L]
+</VirtualHost>
 <VirtualHost *:443>
     DocumentRoot "/var/www/${NCdomainName}"
 
     Header add Strict-Transport-Security: "max-age=15552000;includeSubdomains"
 
-    ServerAdmin admin@cloud.tt.com
-    ServerName cloud.tt.com
+    ServerAdmin admin@${NCdomainName}
+    ServerName ${NCdomainName}
 
     <Directory "/var/www/${NCdomainName}/">
-    Options MultiViews FollowSymlinks
-    AllowOverride All
-    Order allow,deny
-    Allow from all
+    Options Indexes FollowSymLinks
+    AllowOverride None
+    Require all granted
+    Satisfy Any
+
+    Include /var/www/${NCdomainName}/.htaccess
     </Directory>
 
-   TransferLog /var/log/apache2/${NCdomainName}.log
-   ErrorLog /var/log/apache2/${NCdomainName}.log
+    <Directory /var/www/${NCdomainName}/data>
+    Require all denied
+    </Directory>
+
+    <Directory /var/www/${NCdomainName}config/>
+    Require all denied
+    </Directory>
+
+    <IfModule mod_dav.c>
+    Dav off
+    </IfModule>
+
+    <Files ".ht*">
+    Require all denied
+    </Files>
+
+    SetEnv HOME /var/www/${NCdomainName}
+    SetEnv HTTP_HOME /var/www/${NCdomainName}
+
+    TraceEnable off
+    RewriteEngine On
+    RewriteCond %{REQUEST_METHOD} ^TRACK
+    RewriteRule .* - [R=405,L]
+
+    # Avoid "Sabre\DAV\Exception\BadRequest: expected filesize XXXX got XXXX"
+    <IfModule mod_reqtimeout.c>
+    RequestReadTimeout body=0
+    </IfModule>
+
+    # Avoid zero byte files (only works in Ubuntu 22.04 -->>)
+    SetEnv proxy-sendcl 1
+
+    TransferLog /var/log/apache2/${NCdomainName}.log
+    ErrorLog /var/log/apache2/${NCdomainName}.error.log
 
 
     # Intermediate configuration
