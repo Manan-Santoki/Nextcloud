@@ -184,7 +184,7 @@ cat > /etc/apache2/sites-available/${NCdomainName}.conf << EOF
     Require all denied
     </Directory>
 
-    <Directory /var/www/${NCdomainName}config/>
+    <Directory /var/www/${NCdomainName}/config/>
     Require all denied
     </Directory>
 
