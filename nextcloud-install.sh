@@ -149,6 +149,20 @@ sudo a2dissite 000-default.conf > /dev/null 2>&1 &>> ${LOG}
 
 #create host config file
 cat > /etc/apache2/sites-available/${NCdomainName}.conf << EOF
+<VirtualHost *:80>
+  DocumentRoot /var/www/${NCdomainName}/
+  ServerName  ${NCdomainName}
+
+  <Directory /var/www/${NCdomainName}/>
+    Require all granted
+    AllowOverride All
+    Options FollowSymLinks MultiViews
+
+    <IfModule mod_dav.c>
+      Dav off
+    </IfModule>
+  </Directory>
+</VirtualHost>
 <VirtualHost *:443>
     DocumentRoot "/var/www/${NCdomainName}"
 
