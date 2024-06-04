@@ -149,10 +149,6 @@ sudo a2dissite 000-default.conf > /dev/null 2>&1 &>> ${LOG}
 
 #create host config file
 cat > /etc/apache2/sites-available/${NCdomainName}.conf << EOF
-<VirtualHost *:80>
-    RewriteEngine On
-    RewriteRule ^(.*)$ https://%{HTTP_HOST}$1 [R=301,L]
-</VirtualHost>
 <VirtualHost *:443>
     DocumentRoot "/var/www/${NCdomainName}"
 
